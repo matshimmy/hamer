@@ -12,7 +12,7 @@ os.environ["PYOPENGL_PLATFORM"] = "egl"
 
 # project root directory
 ROOT_DIR = "./"
-VIT_DIR = os.path.join(ROOT_DIR, "third-party/ViTPose")
+VIT_DIR = os.path.join(ROOT_DIR, "external/hamer/third-party/ViTPose")
 
 class ViTPoseModel(object):
     MODEL_DICT = {
