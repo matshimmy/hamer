@@ -7,7 +7,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'gdown',
-        'numpy',
+        'numpy<2.0.0',
         'opencv-python',
         'pyrender',
         'pytorch-lightning',
@@ -23,6 +23,7 @@ setup(
         'einops',
         'xtcocotools',
         'pandas',
+        'ultralytics',
     ],
     extras_require={
         'all': [
