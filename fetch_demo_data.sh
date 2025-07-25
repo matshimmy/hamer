@@ -8,3 +8,5 @@ wget https://github.com/ultralytics/assets/releases/download/v8.3.0/yolov8n.pt
 #wget https://www.cs.utexas.edu/~pavlakos/hamer/data/hamer_demo_data.tar.gz
 
 tar --warning=no-unknown-keyword --exclude=".*" -xvf hamer_demo_data.tar.gz
+
+mv hamer_demo_data.tar.gz ./_DATA/

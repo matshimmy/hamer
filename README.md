@@ -1,8 +1,8 @@
 # HaMeR: Hand Mesh Recovery
-Conda:
+venv:
 ```bash
-conda create --name hamer python=3.10
-conda activate hamer
+python3.10 -m venv .hamer
+source .hamer/bin/activate
 ```
 
 Then, you can install the rest of the dependencies. This is for CUDA 11.7, but you can adapt accordingly:
