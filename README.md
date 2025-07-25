@@ -1,5 +1,15 @@
 # HaMeR: Hand Mesh Recovery
-venv:
+
+## Installation
+
+First, install Python 3.10:
+```bash
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.10 python3.10-venv
+```
+
+Then create and activate the virtual environment:
 ```bash
 python3.10 -m venv .hamer
 source .hamer/bin/activate
