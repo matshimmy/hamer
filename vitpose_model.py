@@ -11,8 +11,8 @@ from mmpose.apis import inference_top_down_pose_model, init_pose_model, process_
 os.environ["PYOPENGL_PLATFORM"] = "egl"
 
 # project root directory
-ROOT_DIR = "./"
-VIT_DIR = os.path.join(ROOT_DIR, "external/hamer/third-party/ViTPose")
+ROOT_DIR = "./external/hamer"
+VIT_DIR = os.path.join(ROOT_DIR, "third-party/ViTPose")
 
 class ViTPoseModel(object):
     MODEL_DICT = {
