@@ -15,6 +15,7 @@ token_channel.csv
 /hamer_training_data/
 /outputs/
 out_demo
+joint_prediction/to-predict/output/
 
 mano_v1_2/
 
