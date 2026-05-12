@@ -15,12 +15,17 @@ python3.10 -m venv .hamer
 source .hamer/bin/activate
 ```
 
-Then, you can install the rest of the dependencies. This is for CUDA 11.7, but you can adapt accordingly:
+Then, you can install the rest of the dependencies:
 ```bash
-pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu124
 pip install -e .[all]
 pip install -v -e third-party/ViTPose
 ```
+
+Install PyTorch:
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+```
+If pip complains about `typing-extensions` while resolving the cu128 wheels, run `pip install -U typing-extensions` first and retry.
 
 You also need to download the trained models:
 ```bash
@@ -28,6 +33,12 @@ bash fetch_demo_data.sh
 ```
 
 Besides these files, you also need to download the MANO model. Please visit the [MANO website](https://mano.is.tue.mpg.de) and register to get access to the downloads section.  We only require the right hand model. You need to put `MANO_RIGHT.pkl` under the `_DATA/data/mano` folder.
+
+## Demo
+
+```bash
+python demo.py --img_folder example_data --out_folder out_demo --save_mesh
+```
 
 ## Acknowledgements
 Parts of the code are taken or adapted from the following repos:

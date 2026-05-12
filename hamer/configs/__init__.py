@@ -2,7 +2,9 @@ import os
 from typing import Dict
 from yacs.config import CfgNode as CN
 
-CACHE_DIR_HAMER = "./external/hamer/_DATA"
+# Resolve relative to this file (works regardless of the current working directory).
+# Layout: <repo>/hamer/configs/__init__.py  ->  <repo>/_DATA
+CACHE_DIR_HAMER = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "_DATA"))
 
 def to_lower(x: Dict) -> Dict:
     """

@@ -28,7 +28,6 @@ def main():
     parser.add_argument('--save_mesh', dest='save_mesh', action='store_true', default=False, help='If set, save meshes to disk also')
     parser.add_argument('--batch_size', type=int, default=1, help='Batch size for inference/fitting')
     parser.add_argument('--rescale_factor', type=float, default=2.0, help='Factor for padding the bbox')
-    parser.add_argument('--body_detector', type=str, default='vitdet', choices=['vitdet', 'regnety'], help='Using regnety improves runtime and reduces memory')
     parser.add_argument('--file_type', nargs='+', default=['*.jpg', '*.png'], help='List of file extensions to consider')
 
     args = parser.parse_args()
@@ -42,26 +41,8 @@ def main():
     model = model.to(device)
     model.eval()
 
-    # Load detector
-    from hamer.utils.utils_detectron2 import DefaultPredictor_Lazy
-    if args.body_detector == 'vitdet':
-        from detectron2.config import LazyConfig
-        import hamer
-        cfg_path = Path(hamer.__file__).parent/'configs'/'cascade_mask_rcnn_vitdet_h_75ep.py'
-        detectron2_cfg = LazyConfig.load(str(cfg_path))
-        detectron2_cfg.train.init_checkpoint = "https://dl.fbaipublicfiles.com/detectron2/ViTDet/COCO/cascade_mask_rcnn_vitdet_h/f328730692/model_final_f05665.pkl"
-        for i in range(3):
-            detectron2_cfg.model.roi_heads.box_predictors[i].test_score_thresh = 0.25
-        detector = DefaultPredictor_Lazy(detectron2_cfg)
-    elif args.body_detector == 'regnety':
-        from detectron2 import model_zoo
-        from detectron2.config import get_cfg
-        detectron2_cfg = model_zoo.get_config('new_baselines/mask_rcnn_regnety_4gf_dds_FPN_400ep_LSJ.py', trained=True)
-        detectron2_cfg.model.roi_heads.box_predictor.test_score_thresh = 0.5
-        detectron2_cfg.model.roi_heads.box_predictor.test_nms_thresh   = 0.4
-        detector       = DefaultPredictor_Lazy(detectron2_cfg)
-
-    # keypoint detector
+    # keypoint detector (ViTPose). The body detector (detectron2) is skipped:
+    # we feed the full frame to ViTPose instead, like benchmark_HaMeR.py.
     cpm = ViTPoseModel(device)
 
     # Setup the renderer
@@ -76,20 +57,16 @@ def main():
     # Iterate over all images in folder
     for img_path in img_paths:
         img_cv2 = cv2.imread(str(img_path))
-
-        # Detect humans in image
-        det_out = detector(img_cv2)
         img = img_cv2.copy()[:, :, ::-1]
 
-        det_instances = det_out['instances']
-        valid_idx = (det_instances.pred_classes==0) & (det_instances.scores > 0.5)
-        pred_bboxes=det_instances.pred_boxes.tensor[valid_idx].cpu().numpy()
-        pred_scores=det_instances.scores[valid_idx].cpu().numpy()
+        # No body detector: use the full image as the person bounding box
+        h, w = img_cv2.shape[:2]
+        full_bbox = np.array([[0, 0, w, h, 1.0]])
 
-        # Detect human keypoints for each person
+        # Detect human keypoints over the full frame
         vitposes_out = cpm.predict_pose(
             img,
-            [np.concatenate([pred_bboxes, pred_scores[:, None]], axis=1)],
+            [full_bbox],
         )
 
         bboxes = []
